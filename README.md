@@ -6,12 +6,22 @@
 Install with [npm](npmjs.org):
 
 ```bash
-npm i assemble-collections --save-dev
+npm i assemble-collections --save
 ```
 
 
+## Methods
+
+
+## Examples
+
+
 ## Author
- * Brian Woodward
+ * 
+**Brian Woodward**
+
++ [github/doowb](https://github.com/doowb)
++ [twitter/doowb](http://twitter.com/jonschlinkert)
 
 ## License
 Copyright (c) 2014 Brian Woodward, contributors.  

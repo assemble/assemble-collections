@@ -3,10 +3,16 @@
 > {%= description %}
 
 ## Install
-{%= include("install") %}
+{%= include('install', {save: '--save'}) %}
+
+## Methods
+{%= docs('methods') %}
+
+## Examples
+{%= docs('examples') %}
 
 ## Author
- * {%= author.name %}
+ * {%= contrib('brian') %}
 
 ## License
 {%= copyright() %}
