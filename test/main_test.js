@@ -164,6 +164,83 @@ describe('collection', function() {
 
     });
 
+    it('should return an item by a value on a namespaced property in the metadata using get', function () {
+      var itemCollection = new collection.ItemCollection();
+      itemCollection.add({
+        src: 'path/to/one.hbs',
+        name: 'one',
+        metadata: {
+          address: {
+            city: 'Cincinnati'
+          }
+        }
+      });
+      itemCollection.add({
+        src: 'path/to/two.hbs',
+        name: 'two',
+        metadata: {
+          address: {
+            city: 'Cleveland'
+          }
+        }
+      });
+      itemCollection.add({
+        src: 'path/to/three.hbs',
+        name: 'three',
+        metadata: {
+          address: {
+            city: 'Convington'
+          }
+        }
+      });
+
+      var actual = itemCollection.get('Cincinnati', 'address.city');
+      expect(actual.name).to.eql('one');
+      expect(actual.metadata.address.city).to.eql('Cincinnati');
+
+    });
+
+    it('should return an item by a custom function', function () {
+      var itemCollection = new collection.ItemCollection();
+      itemCollection.add({
+        src: 'path/to/one.hbs',
+        name: 'one',
+        metadata: {
+          address: {
+            city: 'Cincinnati',
+            state: 'OH'
+          }
+        }
+      });
+      itemCollection.add({
+        src: 'path/to/two.hbs',
+        name: 'two',
+        metadata: {
+          address: {
+            city: 'Cleveland',
+            state: 'oh'
+          }
+        }
+      });
+      itemCollection.add({
+        src: 'path/to/three.hbs',
+        name: 'three',
+        metadata: {
+          address: {
+            city: 'Convington',
+            state: 'KY'
+          }
+        }
+      });
+
+      var actual = itemCollection.get(function(page) {
+        return page.metadata.address.state === 'oh';
+      });
+      expect(actual.name).to.eql('two');
+      expect(actual.metadata.address.city).to.eql('Cleveland');
+    });
+
+
   });
 
 });
