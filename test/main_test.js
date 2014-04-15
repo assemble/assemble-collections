@@ -83,6 +83,18 @@ describe('collection', function() {
 
     });
 
+    it('should get a collection item by property name', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = new collection.Collection(options);
+      col.add('a');
+
+      var collectionItem = new collection.CollectionItem('a');
+      expect(col.a).to.eql(collectionItem);
+    });
+
   });
 
   describe('item collection', function() {
