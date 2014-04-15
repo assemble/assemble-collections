@@ -15,6 +15,118 @@ var collection = require('../');
 
 describe('collection', function() {
 
+  describe('helper methods', function () {
+
+    it('should create a collection and add it to the cache', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = collection.createCollection(options);
+      expect(col).to.be.instanceof(collection.Collection);
+      expect(col.name).to.eql(options.name);
+      expect(col.plural).to.eql(options.plural);
+      expect(collection.cache).to.have.property(options.plural);
+      expect(collection.cache[options.plural]).to.be.instanceof(collection.Collection);
+      expect(collection.cache[options.plural]).to.eql(col);
+    });
+
+
+    it('should add a collection item to a collection', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = collection.createCollection(options);
+      var item1 = {name: 'post1', src: 'path/to/post/1.hbs', metadata: { title: 'First Awesome Post' } };
+      var item2 = {name: 'post2', src: 'path/to/post/2.hbs', metadata: { title: 'Second Awesome Post' } };
+      var item3 = {name: 'post3', src: 'path/to/post/3.hbs', metadata: { title: 'Third Awesome Post' } };
+
+      collection.addCollectionItem(options.plural, 'a');
+      collection.addCollectionItem(options.plural, 'b');
+
+      expect(col).to.have.property('a');
+      expect(col).to.have.property('b');
+
+    });
+
+    it('should automatically add items to the proper collections and collection items', function () {
+
+      var tagsCollectionOpts = {
+        name: 'tag',
+        plural: 'tags'
+      };
+
+      var archiveCollectionOpts = {
+        name: 'archive',
+        plural: 'archives'
+      };
+
+      var tagsCollection = collection.createCollection(tagsCollectionOpts);
+      var archivesCollection = collection.createCollection(archiveCollectionOpts);
+
+      var items = [];
+      items.push({name: 'post1', src: 'path/to/post/1.hbs', metadata: { tags: ['a'], archives: ['2013', 'DEC'], title: 'First Awesome Post' } });
+      items.push({name: 'post2', src: 'path/to/post/2.hbs', metadata: { tags: ['a', 'b'], archives: ['2013', 'DEC'], title: 'Second Awesome Post' } });
+      items.push({name: 'post3', src: 'path/to/post/3.hbs', metadata: { tags: ['a', 'c'], archives: ['2014', 'JAN'], title: 'Third Awesome Post' } });
+      items.push({name: 'post4', src: 'path/to/post/4.hbs', metadata: { tags: ['b'], archives: ['2014', 'FEB'], title: 'Fourth Awesome Post' } });
+      items.push({name: 'post5', src: 'path/to/post/5.hbs', metadata: { tags: ['c'], archives: ['2014', 'MAR'], title: 'Fifth Awesome Post' } });
+      items.push({name: 'post6', src: 'path/to/post/6.hbs', metadata: { tags: ['b', 'c'], archives: ['2014', 'APR'], title: 'Sixth Awesome Post' } });
+
+      for(var i = 0; i < items.length; i++) {
+        collection.addItemToCollection(items[i]);
+      }
+
+      // collection item counts
+      expect(tagsCollection.a.items.items.length).to.eql(3);
+      expect(tagsCollection.b.items.items.length).to.eql(3);
+      expect(tagsCollection.c.items.items.length).to.eql(3);
+
+      expect(archivesCollection[2013].items.items.length).to.eql(2);
+      expect(archivesCollection[2014].items.items.length).to.eql(4);
+      expect(archivesCollection.DEC.items.items.length).to.eql(2);
+      expect(archivesCollection.JAN.items.items.length).to.eql(1);
+      expect(archivesCollection.FEB.items.items.length).to.eql(1);
+      expect(archivesCollection.MAR.items.items.length).to.eql(1);
+      expect(archivesCollection.APR.items.items.length).to.eql(1);
+
+      // post 1
+      expect(tagsCollection.a.get('post1')).to.eql(items[0]);
+      expect(archivesCollection[2013].get('post1')).to.eql(items[0]);
+      expect(archivesCollection.DEC.get('post1')).to.eql(items[0]);
+
+      // post 2
+      expect(tagsCollection.a.get('post2')).to.eql(items[1]);
+      expect(tagsCollection.b.get('post2')).to.eql(items[1]);
+      expect(archivesCollection[2013].get('post2')).to.eql(items[1]);
+      expect(archivesCollection.DEC.get('post2')).to.eql(items[1]);
+
+      // post 3
+      expect(tagsCollection.a.get('post3')).to.eql(items[2]);
+      expect(tagsCollection.c.get('post3')).to.eql(items[2]);
+      expect(archivesCollection[2014].get('post3')).to.eql(items[2]);
+      expect(archivesCollection.JAN.get('post3')).to.eql(items[2]);
+
+      // post 4
+      expect(tagsCollection.b.get('post4')).to.eql(items[3]);
+      expect(archivesCollection[2014].get('post4')).to.eql(items[3]);
+      expect(archivesCollection.FEB.get('post4')).to.eql(items[3]);
+
+      // post 5
+      expect(tagsCollection.c.get('post5')).to.eql(items[4]);
+      expect(archivesCollection[2014].get('post5')).to.eql(items[4]);
+      expect(archivesCollection.MAR.get('post5')).to.eql(items[4]);
+
+      // post 6
+      expect(tagsCollection.b.get('post6')).to.eql(items[5]);
+      expect(tagsCollection.c.get('post6')).to.eql(items[5]);
+      expect(archivesCollection[2014].get('post6')).to.eql(items[5]);
+      expect(archivesCollection.APR.get('post6')).to.eql(items[5]);
+
+    });
+
+  });
+
   describe('collection', function () {
 
     it('should create a new collection', function () {
