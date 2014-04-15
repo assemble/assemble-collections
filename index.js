@@ -1,5 +1,6 @@
 
 module.exports = {
   ItemCollection: require('./lib/item-collection'),
-  Collection: require('./lib/collection')
+  Collection: require('./lib/collection'),
+  CollectionItem: require('./lib/collection-item')
 };
