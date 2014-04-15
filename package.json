@@ -37,6 +37,11 @@
     "test": "mocha -R test"
   },
   "devDependencies": {
-    "verb": "~0.2.0"
+    "verb": "~0.2.0",
+    "chai": "^1.9.1",
+    "mocha": "^1.18.2"
+  },
+  "dependencies": {
+    "collections": "^1.0.2"
   }
 }
