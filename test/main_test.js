@@ -58,6 +58,31 @@ describe('collection', function() {
       expect(col.collectionItems.toArray()[0].collectionItem).to.eql('a');
     });
 
+    it('should add a new collection item and related item', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = new collection.Collection(options);
+      var post1 = {name: 'post1', src: 'path/to/post/1.hbs'};
+      col.add('a', post1);
+
+      expect(col.collectionItems.toArray()[0].get('post1')).to.eql(post1);
+    });
+
+    it('should get a collection item from the collection', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = new collection.Collection(options);
+      col.add('a');
+
+      var collectionItem = new collection.CollectionItem('a');
+      expect(col.get('a')).to.eql(collectionItem);
+
+    });
+
   });
 
   describe('item collection', function() {
