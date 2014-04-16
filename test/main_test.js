@@ -78,17 +78,17 @@ describe('collection', function() {
       }
 
       // collection item counts
-      expect(tagsCollection.a.items.items.length).to.eql(3);
-      expect(tagsCollection.b.items.items.length).to.eql(3);
-      expect(tagsCollection.c.items.items.length).to.eql(3);
+      expect(tagsCollection.a.length).to.eql(3);
+      expect(tagsCollection.b.length).to.eql(3);
+      expect(tagsCollection.c.length).to.eql(3);
 
-      expect(archivesCollection[2013].items.items.length).to.eql(2);
-      expect(archivesCollection[2014].items.items.length).to.eql(4);
-      expect(archivesCollection.DEC.items.items.length).to.eql(2);
-      expect(archivesCollection.JAN.items.items.length).to.eql(1);
-      expect(archivesCollection.FEB.items.items.length).to.eql(1);
-      expect(archivesCollection.MAR.items.items.length).to.eql(1);
-      expect(archivesCollection.APR.items.items.length).to.eql(1);
+      expect(archivesCollection[2013].length).to.eql(2);
+      expect(archivesCollection[2014].length).to.eql(4);
+      expect(archivesCollection.DEC.length).to.eql(2);
+      expect(archivesCollection.JAN.length).to.eql(1);
+      expect(archivesCollection.FEB.length).to.eql(1);
+      expect(archivesCollection.MAR.length).to.eql(1);
+      expect(archivesCollection.APR.length).to.eql(1);
 
       // post 1
       expect(tagsCollection.a.get('post1')).to.eql(items[0]);
@@ -123,6 +123,42 @@ describe('collection', function() {
       expect(archivesCollection[2014].get('post6')).to.eql(items[5]);
       expect(archivesCollection.APR.get('post6')).to.eql(items[5]);
 
+      /*
+       * Check that everything is accessible through properties
+       */
+
+      // post 1
+      expect(tagsCollection.a.post1).to.eql(items[0]);
+      expect(archivesCollection[2013].post1).to.eql(items[0]);
+      expect(archivesCollection.DEC.post1).to.eql(items[0]);
+
+      // post 2
+      expect(tagsCollection.a.post2).to.eql(items[1]);
+      expect(tagsCollection.b.post2).to.eql(items[1]);
+      expect(archivesCollection[2013].post2).to.eql(items[1]);
+      expect(archivesCollection.DEC.post2).to.eql(items[1]);
+
+      // post 3
+      expect(tagsCollection.a.post3).to.eql(items[2]);
+      expect(tagsCollection.c.post3).to.eql(items[2]);
+      expect(archivesCollection[2014].post3).to.eql(items[2]);
+      expect(archivesCollection.JAN.post3).to.eql(items[2]);
+
+      // post 4
+      expect(tagsCollection.b.post4).to.eql(items[3]);
+      expect(archivesCollection[2014].post4).to.eql(items[3]);
+      expect(archivesCollection.FEB.post4).to.eql(items[3]);
+
+      // post 5
+      expect(tagsCollection.c.post5).to.eql(items[4]);
+      expect(archivesCollection[2014].post5).to.eql(items[4]);
+      expect(archivesCollection.MAR.post5).to.eql(items[4]);
+
+      // post 6
+      expect(tagsCollection.b.post6).to.eql(items[5]);
+      expect(tagsCollection.c.post6).to.eql(items[5]);
+      expect(archivesCollection[2014].post6).to.eql(items[5]);
+      expect(archivesCollection.APR.post6).to.eql(items[5]);
     });
 
   });
