@@ -77,6 +77,10 @@ describe('collection', function() {
         collection.addItemToCollection(items[i]);
       }
 
+      // items count
+      expect(tagsCollection.tags.length).to.eql(3);
+      expect(archivesCollection.archives.length).to.eql(7);
+
       // collection item counts
       expect(tagsCollection.a.length).to.eql(3);
       expect(tagsCollection.b.length).to.eql(3);
