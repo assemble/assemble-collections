@@ -210,6 +210,29 @@ describe('collection', function() {
       expect(col.collectionItems.toArray()[0].collectionItem).to.eql('a');
     });
 
+    it('should return a sorted list of collection items', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = new collection.Collection(options);
+      col.add('b');
+      col.add('a');
+      col.add('c');
+
+      var actual = col.sort(function (a, b) {
+        if (a.collectionItem < b.collectionItem) {
+          return 1;
+        } else if (a.collectionItem > b.collectionItem) {
+          return -1;
+        }
+        return 0;
+      });
+
+
+      expect(actual[0].collectionItem).to.eql('c');
+    });
+
     it('should add a new collection item and related item', function () {
       var options = {
         name: 'tag',
@@ -272,6 +295,48 @@ describe('collection', function() {
       itemCollection.add(item1);
 
       expect(itemCollection.sorted()[0]).to.eql(item1);
+    });
+
+    it('should sort items by metadata', function () {
+      var itemCollection = new collection.ItemCollection();
+      var item1_1 = {name: '1x1', src: 'path/to/a.hbs', metadata: {group: 'One', slug: 'First'}};
+      var item1_2 = {name: '1x2', src: 'path/to/b.hbs', metadata: {group: 'One', slug: 'Second'}};
+      var item1_3 = {name: '1x3', src: 'path/to/c.hbs', metadata: {group: 'One', slug: 'Third'}};
+
+      var item2_1 = {name: '2x1', src: 'path/to/a.hbs', metadata: {group: 'Two', slug: 'First'}};
+      var item2_2 = {name: '2x2', src: 'path/to/b.hbs', metadata: {group: 'Two', slug: 'Second'}};
+      var item2_3 = {name: '2x3', src: 'path/to/c.hbs', metadata: {group: 'Two', slug: 'Third'}};
+
+      var item3_1 = {name: '3x1', src: 'path/to/a.hbs', metadata: {group: 'Three', slug: 'First'}};
+      var item3_2 = {name: '3x2', src: 'path/to/b.hbs', metadata: {group: 'Three', slug: 'Second'}};
+      var item3_3 = {name: '3x3', src: 'path/to/c.hbs', metadata: {group: 'Three', slug: 'Third'}};
+
+      itemCollection.add(item1_1);
+      itemCollection.add(item1_2);
+      itemCollection.add(item1_3);
+      itemCollection.add(item2_1);
+      itemCollection.add(item2_2);
+      itemCollection.add(item2_3);
+      itemCollection.add(item3_1);
+      itemCollection.add(item3_2);
+      itemCollection.add(item3_3);
+
+      var groupMap = {
+        'One': 1,
+        'Two': 2,
+        'Thee': 3
+      };
+
+      var by = function (item) {
+        return groupMap[item.metadata.group];
+      };
+
+      var actual = itemCollection.sorted({
+        by: by
+      });
+
+      expect(actual[0].name).to.eql('1x1');
+
     });
 
     it('should expose items as properties by name on the collection', function () {
