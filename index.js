@@ -35,11 +35,11 @@ collection.addCollectionItem = function (key, collectionItem) {
 };
 
 collection.addItemToCollection = function (item) {
-  // loop over the collections in the cache and see if there's a corresponding property on the item metadata
+  // loop over the collections in the cache and see if there's a corresponding property on the item data
   for(var key in collection.cache) {
-    if (item.metadata.hasOwnProperty(key)) {
+    if (item.data.hasOwnProperty(key)) {
       var col = collection.cache[key];
-      var list = item.metadata[key];
+      var list = item.data[key];
       if (_.isArray(list) === false) {
         list = [list];
       }
