@@ -16,10 +16,18 @@ var collection = module.exports = {
  */
 collection.cache = [];
 
+function defaultFilter (collection, item) {
+  item.context = item.context || {};
+  if (item.context.hasOwnProperty(collection)) {
+    return Array.isArray(item.context[collection]) ? item.context[collection] : [item.context[collection]];
+  }
+}
+
 collection.createCollection = function (options) {
   options = options || {};
   options.name = options.name || 'collection';
   options.plural = options.plural || options.name;
+  options.filter = options.filter || defaultFilter;
   if (collection.cache.hasOwnProperty(options.plural)) {
     return collection.cache[options.plural];
   }
@@ -35,16 +43,14 @@ collection.addCollectionItem = function (key, collectionItem) {
 };
 
 collection.addItemToCollection = function (item) {
-  // loop over the collections in the cache and see if there's a corresponding property on the item data
+  // loop over the collections in the cache and use the filter
+  // to determine which buckets to add the item to
   for(var key in collection.cache) {
-    if (item.data.hasOwnProperty(key)) {
-      var col = collection.cache[key];
-      var list = item.data[key];
-      if (_.isArray(list) === false) {
-        list = [list];
-      }
-      for(var i = 0; i < list.length; i++) {
-        col.add(list[i], item);
+    var col = collection.cache[key];
+    var buckets = col.options.filter(key, item);
+    if (buckets) {
+      for (var i = 0; i < buckets.length; i++) {
+        col.add(buckets[i], item);
       }
     }
   }
