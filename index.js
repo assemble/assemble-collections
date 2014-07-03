@@ -16,12 +16,52 @@ var collection = module.exports = {
  */
 collection.cache = [];
 
-function defaultFilter (collection, item) {
+
+/**
+ * Default filter function that returns the property on the
+ * item's context if it matches the collection name.
+ *
+ * **Example**
+ * ```js
+ * var item = {
+ *   context: {
+ *     tags: ['meat', 'steak', 'dinner'],
+ *     categories: ['food']
+ *   }
+ * };
+ * var list = defaultFilter(item);
+ * //=> ['meat', 'steak', 'dinner']
+ * ```js
+ *
+ * @param {Object} `item` actual item used to determine the results.
+ * @return {Array} list of buckets to add the item to on the collection
+ * @private
+ */
+
+function defaultFilter (item) {
+  var name = this.options.plural;
   item.context = item.context || {};
-  if (item.context.hasOwnProperty(collection)) {
-    return Array.isArray(item.context[collection]) ? item.context[collection] : [item.context[collection]];
+  if (item.context.hasOwnProperty(name)) {
+    return Array.isArray(item.context[name]) ? item.context[name] : [item.context[name]];
   }
 }
+
+
+/**
+ * Create a new collection with the given options
+ *
+ * **Example**
+ * ```js
+ * var options = {
+ *   name: 'tag',
+ *   plural: 'tags'
+ * };
+ * var tags = collection.createCollection(options);
+ * ```
+ *
+ * @param {Object} `options` determine how the collection is setup
+ * @return {Object} a new collection object
+ */
 
 collection.createCollection = function (options) {
   options = options || {};
@@ -33,6 +73,14 @@ collection.createCollection = function (options) {
   }
   return collection.cache[options.plural] = new Collection(options);
 };
+
+
+/**
+ * Add an item (bucket) to a collection.
+ *
+ * @param {String} `key` name of the collection to add the bucket to.
+ * @param {String} `collectionItem` name of the bucket to add.
+ */
 
 collection.addCollectionItem = function (key, collectionItem) {
   if (collection.cache.hasOwnProperty(key)) {
@@ -47,7 +95,7 @@ collection.addItemToCollection = function (item) {
   // to determine which buckets to add the item to
   for(var key in collection.cache) {
     var col = collection.cache[key];
-    var buckets = col.options.filter(key, item);
+    var buckets = col.options.filter.call(col, item);
     if (buckets) {
       for (var i = 0; i < buckets.length; i++) {
         col.add(buckets[i], item);
