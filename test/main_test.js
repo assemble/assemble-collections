@@ -268,6 +268,23 @@ describe('collection', function() {
       expect(actual[0].collectionItem).to.eql('c');
     });
 
+    it('should return the collection item keys', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags'
+      };
+      var col = new collection.Collection(options);
+      col.add('b');
+      col.add('a');
+      col.add('c');
+
+      var actual = col.collectionItems.keys;
+      expect(actual.length).to.eql(3);
+      expect(actual[0]).to.eql('a');
+      expect(actual[1]).to.eql('b');
+      expect(actual[2]).to.eql('c');
+    });
+
     it('should add a new collection item and related item', function () {
       var options = {
         name: 'tag',
