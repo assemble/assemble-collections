@@ -104,6 +104,10 @@ collection.addItemToCollection = function (item) {
   }
 };
 
+collection.forEach = function (fn) {
+  this.collections.forEach(fn);
+};
+
 Object.defineProperty(collection, 'collections', {
   get: function () {
     return Object.keys(collection.cache).map(function (key) {
