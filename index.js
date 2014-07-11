@@ -1,9 +1,12 @@
+'use strict';
 
-var _ = require('lodash');
+/**
+ * Local modules
+ */
 
-ItemCollection = require('./lib/item-collection');
-Collection = require('./lib/collection');
-CollectionItem = require('./lib/collection-item');
+var Collection = require('./lib/collection');
+var ItemCollection = require('./lib/item-collection');
+var CollectionItem = require('./lib/collection-item');
 
 var collection = module.exports = {
   CollectionItem: CollectionItem,
@@ -11,9 +14,11 @@ var collection = module.exports = {
   Collection: Collection
 };
 
-/*
+
+/**
  * Static methods used to create and manage collections
  */
+
 collection.cache = [];
 
 
@@ -22,6 +27,7 @@ collection.cache = [];
  * item's locals if it matches the collection name.
  *
  * **Example**
+ *
  * ```js
  * var item = {
  *   locals: {
@@ -35,7 +41,7 @@ collection.cache = [];
  *
  * @param {Object} `item` actual item used to determine the results.
  * @return {Array} list of buckets to add the item to on the collection
- * @private
+ * @api private
  */
 
 function defaultFilter (item) {
@@ -51,6 +57,7 @@ function defaultFilter (item) {
  * Create a new collection with the given options
  *
  * **Example**
+ *
  * ```js
  * var options = {
  *   name: 'tag',
@@ -79,6 +86,7 @@ collection.createCollection = function (options) {
  * Add an item (bucket) to a collection.
  *
  * **Example**
+ *
  * ```js
  * collection.addCollectionItem('tags', 'football');
  * ```
@@ -100,6 +108,7 @@ collection.addCollectionItem = function (key, collectionItem) {
  * Add an item to collections that it belongs to.
  *
  * **Example**
+ *
  * ```js
  * item = {
  *   name: 'foo',
@@ -112,7 +121,6 @@ collection.addCollectionItem = function (key, collectionItem) {
  * ```
  *
  * @param {Object} `item` item to add to collections based on filters
- * @return {undefined}
  */
 
 collection.addItemToCollection = function (item) {
@@ -134,6 +142,7 @@ collection.addItemToCollection = function (item) {
  * Iterate over all the collections
  *
  * **Example**
+ *
  * ```js
  * collections.forEach(function (collection) {
  *   //=> do stuff to the collection
@@ -141,7 +150,6 @@ collection.addItemToCollection = function (item) {
  * ```
  *
  * @param {Function} `fn` function that gets called for each collection
- * @return {undefined}
  */
 
 collection.forEach = function (fn) {
@@ -153,6 +161,7 @@ collection.forEach = function (fn) {
  * List of collections
  *
  * **Example**
+ *
  * ```js
  * var collections = collection.collections;
  * //=> all the collections as an array
