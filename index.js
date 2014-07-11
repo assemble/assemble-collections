@@ -19,12 +19,12 @@ collection.cache = [];
 
 /**
  * Default filter function that returns the property on the
- * item's context if it matches the collection name.
+ * item's locals if it matches the collection name.
  *
  * **Example**
  * ```js
  * var item = {
- *   context: {
+ *   locals: {
  *     tags: ['meat', 'steak', 'dinner'],
  *     categories: ['food']
  *   }
@@ -40,9 +40,9 @@ collection.cache = [];
 
 function defaultFilter (item) {
   var name = this.options.plural;
-  item.context = item.context || {};
-  if (item.context.hasOwnProperty(name)) {
-    return Array.isArray(item.context[name]) ? item.context[name] : [item.context[name]];
+  item.locals = item.locals || {};
+  if (item.locals.hasOwnProperty(name)) {
+    return Array.isArray(item.locals[name]) ? item.locals[name] : [item.locals[name]];
   }
 }
 

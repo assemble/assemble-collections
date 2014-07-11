@@ -38,9 +38,9 @@ describe('collection', function() {
         plural: 'tags'
       };
       var col = collection.createCollection(options);
-      var item1 = {name: 'post1', src: 'path/to/post/1.hbs', context: { title: 'First Awesome Post' } };
-      var item2 = {name: 'post2', src: 'path/to/post/2.hbs', context: { title: 'Second Awesome Post' } };
-      var item3 = {name: 'post3', src: 'path/to/post/3.hbs', context: { title: 'Third Awesome Post' } };
+      var item1 = {name: 'post1', src: 'path/to/post/1.hbs', locals: { title: 'First Awesome Post' } };
+      var item2 = {name: 'post2', src: 'path/to/post/2.hbs', locals: { title: 'Second Awesome Post' } };
+      var item3 = {name: 'post3', src: 'path/to/post/3.hbs', locals: { title: 'Third Awesome Post' } };
 
       collection.addCollectionItem(options.plural, 'a');
       collection.addCollectionItem(options.plural, 'b');
@@ -66,12 +66,12 @@ describe('collection', function() {
       var archivesCollection = collection.createCollection(archiveCollectionOpts);
 
       var items = [];
-      items.push({name: 'post1', src: 'path/to/post/1.hbs', context: { tags: ['a'], archives: ['2013', 'DEC'], title: 'First Awesome Post' } });
-      items.push({name: 'post2', src: 'path/to/post/2.hbs', context: { tags: ['a', 'b'], archives: ['2013', 'DEC'], title: 'Second Awesome Post' } });
-      items.push({name: 'post3', src: 'path/to/post/3.hbs', context: { tags: ['a', 'c'], archives: ['2014', 'JAN'], title: 'Third Awesome Post' } });
-      items.push({name: 'post4', src: 'path/to/post/4.hbs', context: { tags: ['b'], archives: ['2014', 'FEB'], title: 'Fourth Awesome Post' } });
-      items.push({name: 'post5', src: 'path/to/post/5.hbs', context: { tags: ['c'], archives: ['2014', 'MAR'], title: 'Fifth Awesome Post' } });
-      items.push({name: 'post6', src: 'path/to/post/6.hbs', context: { tags: ['b', 'c'], archives: ['2014', 'APR'], title: 'Sixth Awesome Post' } });
+      items.push({name: 'post1', src: 'path/to/post/1.hbs', locals: { tags: ['a'], archives: ['2013', 'DEC'], title: 'First Awesome Post' } });
+      items.push({name: 'post2', src: 'path/to/post/2.hbs', locals: { tags: ['a', 'b'], archives: ['2013', 'DEC'], title: 'Second Awesome Post' } });
+      items.push({name: 'post3', src: 'path/to/post/3.hbs', locals: { tags: ['a', 'c'], archives: ['2014', 'JAN'], title: 'Third Awesome Post' } });
+      items.push({name: 'post4', src: 'path/to/post/4.hbs', locals: { tags: ['b'], archives: ['2014', 'FEB'], title: 'Fourth Awesome Post' } });
+      items.push({name: 'post5', src: 'path/to/post/5.hbs', locals: { tags: ['c'], archives: ['2014', 'MAR'], title: 'Fifth Awesome Post' } });
+      items.push({name: 'post6', src: 'path/to/post/6.hbs', locals: { tags: ['b', 'c'], archives: ['2014', 'APR'], title: 'Sixth Awesome Post' } });
 
       for(var i = 0; i < items.length; i++) {
         collection.addItemToCollection(items[i]);
@@ -297,19 +297,19 @@ describe('collection', function() {
       expect(itemCollection.sorted()[0]).to.eql(item1);
     });
 
-    it('should sort items by context', function () {
+    it('should sort items by locals', function () {
       var itemCollection = new collection.ItemCollection();
-      var item1_1 = {name: '1x1', src: 'path/to/a.hbs', context: {group: 'One', slug: 'First'}};
-      var item1_2 = {name: '1x2', src: 'path/to/b.hbs', context: {group: 'One', slug: 'Second'}};
-      var item1_3 = {name: '1x3', src: 'path/to/c.hbs', context: {group: 'One', slug: 'Third'}};
+      var item1_1 = {name: '1x1', src: 'path/to/a.hbs', locals: {group: 'One', slug: 'First'}};
+      var item1_2 = {name: '1x2', src: 'path/to/b.hbs', locals: {group: 'One', slug: 'Second'}};
+      var item1_3 = {name: '1x3', src: 'path/to/c.hbs', locals: {group: 'One', slug: 'Third'}};
 
-      var item2_1 = {name: '2x1', src: 'path/to/a.hbs', context: {group: 'Two', slug: 'First'}};
-      var item2_2 = {name: '2x2', src: 'path/to/b.hbs', context: {group: 'Two', slug: 'Second'}};
-      var item2_3 = {name: '2x3', src: 'path/to/c.hbs', context: {group: 'Two', slug: 'Third'}};
+      var item2_1 = {name: '2x1', src: 'path/to/a.hbs', locals: {group: 'Two', slug: 'First'}};
+      var item2_2 = {name: '2x2', src: 'path/to/b.hbs', locals: {group: 'Two', slug: 'Second'}};
+      var item2_3 = {name: '2x3', src: 'path/to/c.hbs', locals: {group: 'Two', slug: 'Third'}};
 
-      var item3_1 = {name: '3x1', src: 'path/to/a.hbs', context: {group: 'Three', slug: 'First'}};
-      var item3_2 = {name: '3x2', src: 'path/to/b.hbs', context: {group: 'Three', slug: 'Second'}};
-      var item3_3 = {name: '3x3', src: 'path/to/c.hbs', context: {group: 'Three', slug: 'Third'}};
+      var item3_1 = {name: '3x1', src: 'path/to/a.hbs', locals: {group: 'Three', slug: 'First'}};
+      var item3_2 = {name: '3x2', src: 'path/to/b.hbs', locals: {group: 'Three', slug: 'Second'}};
+      var item3_3 = {name: '3x3', src: 'path/to/c.hbs', locals: {group: 'Three', slug: 'Third'}};
 
       itemCollection.add(item1_1);
       itemCollection.add(item1_2);
@@ -328,7 +328,7 @@ describe('collection', function() {
       };
 
       var by = function (item) {
-        return groupMap[item.context.group];
+        return groupMap[item.locals.group];
       };
 
       var actual = itemCollection.sorted({
@@ -350,80 +350,80 @@ describe('collection', function() {
 
     it('should allow setting properties on the item through the getter/setter', function () {
       var itemCollection = new collection.ItemCollection();
-      var item = {name: 'foo', src: 'path/to/foo.hbs', context: { title: 'This is the original title.' } };
+      var item = {name: 'foo', src: 'path/to/foo.hbs', locals: { title: 'This is the original title.' } };
       itemCollection.add(item);
 
-      expect(itemCollection.foo.context.title).to.eql('This is the original title.');
-      itemCollection.foo.context.title = 'New Title';
-      expect(itemCollection.foo.context.title).to.eql('New Title');
+      expect(itemCollection.foo.locals.title).to.eql('This is the original title.');
+      itemCollection.foo.locals.title = 'New Title';
+      expect(itemCollection.foo.locals.title).to.eql('New Title');
     });
 
-    it('should return an item by a value on a property in the context', function () {
+    it('should return an item by a value on a property in the locals', function () {
       var itemCollection = new collection.ItemCollection();
       itemCollection.add({
         src: 'path/to/one.hbs',
         name: 'one',
-        context: {
+        locals: {
           city: 'Cincinnati'
         }
       });
       itemCollection.add({
         src: 'path/to/two.hbs',
         name: 'two',
-        context: {
+        locals: {
           city: 'Cleveland'
         }
       });
       itemCollection.add({
         src: 'path/to/three.hbs',
         name: 'three',
-        context: {
+        locals: {
           city: 'Convington'
         }
       });
 
-      var actual = itemCollection.findByContext('Cincinnati', 'city');
+      var actual = itemCollection.findByLocals('Cincinnati', 'city');
       expect(actual.name).to.eql('one');
-      expect(actual.context.city).to.eql('Cincinnati');
+      expect(actual.locals.city).to.eql('Cincinnati');
 
     });
 
-    it('should return an item by a value on a property in the context using get', function () {
+    it('should return an item by a value on a property in the locals using get', function () {
       var itemCollection = new collection.ItemCollection();
       itemCollection.add({
         src: 'path/to/one.hbs',
         name: 'one',
-        context: {
+        locals: {
           city: 'Cincinnati'
         }
       });
       itemCollection.add({
         src: 'path/to/two.hbs',
         name: 'two',
-        context: {
+        locals: {
           city: 'Cleveland'
         }
       });
       itemCollection.add({
         src: 'path/to/three.hbs',
         name: 'three',
-        context: {
+        locals: {
           city: 'Convington'
         }
       });
 
       var actual = itemCollection.get('Cincinnati', 'city');
       expect(actual.name).to.eql('one');
-      expect(actual.context.city).to.eql('Cincinnati');
+      expect(actual.locals.city).to.eql('Cincinnati');
 
     });
 
-    it('should return an item by a value on a namespaced property in the context using get', function () {
+    it('should return an item by a value on a namespaced property in the locals using get', function () {
       var itemCollection = new collection.ItemCollection();
       itemCollection.add({
         src: 'path/to/one.hbs',
         name: 'one',
-        context: {
+        locals: {
           address: {
             city: 'Cincinnati'
           }
@@ -432,7 +432,7 @@ describe('collection', function() {
       itemCollection.add({
         src: 'path/to/two.hbs',
         name: 'two',
-        context: {
+        locals: {
           address: {
             city: 'Cleveland'
           }
@@ -441,7 +441,7 @@ describe('collection', function() {
       itemCollection.add({
         src: 'path/to/three.hbs',
         name: 'three',
-        context: {
+        locals: {
           address: {
             city: 'Convington'
           }
@@ -450,7 +450,7 @@ describe('collection', function() {
 
       var actual = itemCollection.get('Cincinnati', 'address.city');
       expect(actual.name).to.eql('one');
-      expect(actual.context.address.city).to.eql('Cincinnati');
+      expect(actual.locals.address.city).to.eql('Cincinnati');
 
     });
 
@@ -459,7 +459,7 @@ describe('collection', function() {
       itemCollection.add({
         src: 'path/to/one.hbs',
         name: 'one',
-        context: {
+        locals: {
           address: {
             city: 'Cincinnati',
             state: 'OH'
@@ -469,7 +469,7 @@ describe('collection', function() {
       itemCollection.add({
         src: 'path/to/two.hbs',
         name: 'two',
-        context: {
+        locals: {
           address: {
             city: 'Cleveland',
             state: 'oh'
@@ -479,7 +479,7 @@ describe('collection', function() {
       itemCollection.add({
         src: 'path/to/three.hbs',
         name: 'three',
-        context: {
+        locals: {
           address: {
             city: 'Convington',
             state: 'KY'
@@ -488,10 +488,10 @@ describe('collection', function() {
       });
 
       var actual = itemCollection.get(function(page) {
-        return page.context.address.state === 'oh';
+        return page.locals.address.state === 'oh';
       });
       expect(actual.name).to.eql('two');
-      expect(actual.context.address.city).to.eql('Cleveland');
+      expect(actual.locals.address.city).to.eql('Cleveland');
     });
 
 
