@@ -78,6 +78,11 @@ collection.createCollection = function (options) {
 /**
  * Add an item (bucket) to a collection.
  *
+ * **Example**
+ * ```js
+ * collection.addCollectionItem('tags', 'football');
+ * ```
+ *
  * @param {String} `key` name of the collection to add the bucket to.
  * @param {String} `collectionItem` name of the bucket to add.
  */
@@ -89,6 +94,26 @@ collection.addCollectionItem = function (key, collectionItem) {
   var col = collection.createCollection({name: key});
   col.add(collectionItem);
 };
+
+
+/**
+ * Add an item to collections that it belongs to.
+ *
+ * **Example**
+ * ```js
+ * item = {
+ *   name: 'foo',
+ *   locals: {
+ *     tags: ['football', 'baseball']
+ *   }
+ * };
+ * collection.addItemToCollection(item);
+ * //=> added to 'football' and 'baseball' tag collections
+ * ```
+ *
+ * @param {Object} `item` item to add to collections based on filters
+ * @return {undefined}
+ */
 
 collection.addItemToCollection = function (item) {
   // loop over the collections in the cache and use the filter
@@ -104,9 +129,36 @@ collection.addItemToCollection = function (item) {
   }
 };
 
+
+/**
+ * Iterate over all the collections
+ *
+ * **Example**
+ * ```js
+ * collections.forEach(function (collection) {
+ *   //=> do stuff to the collection
+ * });
+ * ```
+ *
+ * @param {Function} `fn` function that gets called for each collection
+ * @return {undefined}
+ */
+
 collection.forEach = function (fn) {
   this.collections.forEach(fn);
 };
+
+
+/**
+ * List of collections
+ *
+ * **Example**
+ * ```js
+ * var collections = collection.collections;
+ * //=> all the collections as an array
+ * ```
+ * @return {Array} list of collections
+ */
 
 Object.defineProperty(collection, 'collections', {
   get: function () {
