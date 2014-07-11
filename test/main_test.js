@@ -305,7 +305,7 @@ describe('collection', function() {
       var col = new collection.Collection(options);
       col.add('a');
 
-      var collectionItem = new collection.CollectionItem('a');
+      var collectionItem = new collection.CollectionItem('a', options);
       expect(col.get('a')).to.eql(collectionItem);
 
     });
@@ -318,8 +318,58 @@ describe('collection', function() {
       var col = new collection.Collection(options);
       col.add('a');
 
-      var collectionItem = new collection.CollectionItem('a');
+      var collectionItem = new collection.CollectionItem('a', options);
       expect(col.a).to.eql(collectionItem);
+    });
+
+    it('should get a list of pagination objects', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags',
+        // Index of all tags
+        index: {
+          template: 'index.hbs',
+          pagination: {
+            prop: ':num',
+            limit: 10,
+            sortby: 'some.prop',
+            sortOrder: 'ASC'
+          },
+          permalinks: {
+            structure: ':foo/tags/:num/index.html'
+          }
+        },
+        // Index of pages related to each tag
+        related_pages: {
+          template: 'related-pages.hbs',
+          pagination: {
+            limit: 10,
+            sortby: 'some.prop',
+            sortOrder: 'ASC'
+          },
+          permalinks: {
+            structure: ':foo/tags/:tag/index.html'
+          }
+        }
+      };
+      var col = collection.createCollection(options);
+
+      var items = [];
+      items.push({name: 'post1', src: 'path/to/post/1.hbs', locals: { tags: ['a'], archives: ['2013', 'DEC'], title: 'First Awesome Post' } });
+      items.push({name: 'post2', src: 'path/to/post/2.hbs', locals: { tags: ['a', 'b'], archives: ['2013', 'DEC'], title: 'Second Awesome Post' } });
+      items.push({name: 'post3', src: 'path/to/post/3.hbs', locals: { tags: ['a', 'c'], archives: ['2014', 'JAN'], title: 'Third Awesome Post' } });
+
+      for(var i = 0; i < items.length; i++) {
+        collection.addItemToCollection(items[i]);
+      }
+
+
+      var actual = col.pages();
+//      console.log('pages', actual);
+//
+//      actual.forEach(function (page) {
+//        console.log('items.pages', page.items.pages());
+//      });
     });
 
   });
@@ -545,6 +595,74 @@ describe('collection', function() {
       expect(actual.name).to.eql('two');
       expect(actual.locals.address.city).to.eql('Cleveland');
     });
+
+    it('should get a list of pagination objects', function () {
+      var options = {
+        name: 'tag',
+        plural: 'tags',
+        // Index of all tags
+        index: {
+          template: 'index.hbs',
+          pagination: {
+            prop: ':num',
+            limit: 10,
+            sortby: 'some.prop',
+            sortOrder: 'ASC'
+          },
+          permalinks: {
+            structure: ':foo/tags/:num/index.html'
+          }
+        },
+        // Index of pages related to each tag
+        related_pages: {
+          template: 'related-pages.hbs',
+          pagination: {
+            limit: 10,
+            sortby: 'some.prop',
+            sortOrder: 'ASC'
+          },
+          permalinks: {
+            structure: ':foo/tags/:tag/index.html'
+          }
+        }
+      };
+
+      var itemCollection = new collection.ItemCollection(options);
+      itemCollection.add({
+        src: 'path/to/one.hbs',
+        name: 'one',
+        locals: {
+          address: {
+            city: 'Cincinnati',
+            state: 'OH'
+          }
+        }
+      });
+      itemCollection.add({
+        src: 'path/to/two.hbs',
+        name: 'two',
+        locals: {
+          address: {
+            city: 'Cleveland',
+            state: 'oh'
+          }
+        }
+      });
+      itemCollection.add({
+        src: 'path/to/three.hbs',
+        name: 'three',
+        locals: {
+          address: {
+            city: 'Convington',
+            state: 'KY'
+          }
+        }
+      });
+
+      var actual = itemCollection.pages();
+//      console.log('pagination', actual);
+    });
+
 
 
   });
