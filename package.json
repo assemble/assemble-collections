@@ -45,7 +45,6 @@
   "dependencies": {
     "collections": "^1.0.2",
     "lodash": "^2.4.1",
-    "traverse": "^0.6.6",
-    "xtend": "^3.0.0"
+    "traverse": "^0.6.6"
   }
 }
