@@ -17,6 +17,41 @@ describe('collection', function() {
 
   describe('helper methods', function () {
 
+    beforeEach(function () {
+      collection.cache = [];
+    });
+
+    it('should return all the collections as an array', function () {
+      var tagsCollectionOpts = {
+        name: 'tag',
+        plural: 'tags'
+      };
+
+      var archiveCollectionOpts = {
+        name: 'archive',
+        plural: 'archives'
+      };
+
+      collection.createCollection(tagsCollectionOpts);
+      collection.createCollection(archiveCollectionOpts);
+
+      var items = [];
+      items.push({name: 'post1', src: 'path/to/post/1.hbs', locals: { tags: ['a'], archives: ['2013', 'DEC'], title: 'First Awesome Post' } });
+      items.push({name: 'post2', src: 'path/to/post/2.hbs', locals: { tags: ['a', 'b'], archives: ['2013', 'DEC'], title: 'Second Awesome Post' } });
+      items.push({name: 'post3', src: 'path/to/post/3.hbs', locals: { tags: ['a', 'c'], archives: ['2014', 'JAN'], title: 'Third Awesome Post' } });
+      items.push({name: 'post4', src: 'path/to/post/4.hbs', locals: { tags: ['b'], archives: ['2014', 'FEB'], title: 'Fourth Awesome Post' } });
+      items.push({name: 'post5', src: 'path/to/post/5.hbs', locals: { tags: ['c'], archives: ['2014', 'MAR'], title: 'Fifth Awesome Post' } });
+      items.push({name: 'post6', src: 'path/to/post/6.hbs', locals: { tags: ['b', 'c'], archives: ['2014', 'APR'], title: 'Sixth Awesome Post' } });
+
+      for(var i = 0; i < items.length; i++) {
+        collection.addItemToCollection(items[i]);
+      }
+
+      var actual = collection.collections;
+      expect(actual.length).to.eql(2);
+
+    });
+
     it('should create a collection and add it to the cache', function () {
       var options = {
         name: 'tag',

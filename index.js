@@ -104,3 +104,11 @@ collection.addItemToCollection = function (item) {
   }
 };
 
+Object.defineProperty(collection, 'collections', {
+  get: function () {
+    return Object.keys(collection.cache).map(function (key) {
+      return collection.cache[key];
+    });
+  }
+});
+
