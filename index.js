@@ -7,11 +7,13 @@
 var Collection = require('./lib/collection');
 var ItemCollection = require('./lib/item-collection');
 var CollectionItem = require('./lib/collection-item');
+var Paginate = require('./lib/paginate');
 
 var collection = module.exports = {
   CollectionItem: CollectionItem,
   ItemCollection: ItemCollection,
-  Collection: Collection
+  Collection: Collection,
+  Paginate: Paginate
 };
 
 
