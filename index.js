@@ -26,13 +26,13 @@ collection.cache = [];
 
 /**
  * Default filter function that returns the property on the
- * item's locals if it matches the collection name.
+ * item's data if it matches the collection name.
  *
  * **Example**
  *
  * ```js
  * var item = {
- *   locals: {
+ *   data: {
  *     tags: ['meat', 'steak', 'dinner'],
  *     categories: ['food']
  *   }
@@ -48,9 +48,9 @@ collection.cache = [];
 
 function defaultFilter (item) {
   var name = this.options.plural;
-  item.locals = item.locals || {};
-  if (item.locals.hasOwnProperty(name)) {
-    return Array.isArray(item.locals[name]) ? item.locals[name] : [item.locals[name]];
+  item.data = item.data || {};
+  if (item.data.hasOwnProperty(name)) {
+    return Array.isArray(item.data[name]) ? item.data[name] : [item.data[name]];
   }
 }
 
@@ -114,7 +114,7 @@ collection.addCollectionItem = function (key, collectionItem) {
  * ```js
  * item = {
  *   name: 'foo',
- *   locals: {
+ *   data: {
  *     tags: ['football', 'baseball']
  *   }
  * };
