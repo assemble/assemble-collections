@@ -34,7 +34,8 @@
     "mixin-deep": "^1.1.3"
   },
   "devDependencies": {
-    "gulp-format-md": "^0.1.7"
+    "gulp-format-md": "^0.1.7",
+    "mocha": "^2.4.5"
   },
   "verb": {
     "run": true,
