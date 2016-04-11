@@ -1,181 +1,157 @@
 'use strict';
 
-/**
- * Local modules
- */
+var utils = require('./lib/utils');
 
-var Collection = require('./lib/collection');
-var ItemCollection = require('./lib/item-collection');
-var CollectionItem = require('./lib/collection-item');
-var Paginate = require('./lib/paginate');
-
-var collection = module.exports = {
-  CollectionItem: CollectionItem,
-  ItemCollection: ItemCollection,
-  Collection: Collection,
-  Paginate: Paginate
-};
-
-
-/**
- * Static methods used to create and manage collections
- */
-
-collection.cache = [];
-
-
-/**
- * Default filter function that returns the property on the
- * item's data if it matches the collection name.
- *
- * **Example**
- *
- * ```js
- * var item = {
- *   data: {
- *     tags: ['meat', 'steak', 'dinner'],
- *     categories: ['food']
- *   }
- * };
- * var list = defaultFilter(item);
- * //=> ['meat', 'steak', 'dinner']
- * ```js
- *
- * @param {Object} `item` actual item used to determine the results.
- * @return {Array} list of buckets to add the item to on the collection
- * @api private
- */
-
-function defaultFilter (item) {
-  var name = this.options.plural;
-  item.data = item.data || {};
-  if (item.data.hasOwnProperty(name)) {
-    return Array.isArray(item.data[name]) ? item.data[name] : [item.data[name]];
-  }
-}
-
-
-/**
- * Create a new collection with the given options
- *
- * **Example**
- *
- * ```js
- * var options = {
- *   name: 'tag',
- *   plural: 'tags'
- * };
- * var tags = collection.createCollection(options);
- * ```
- *
- * @param {Object} `options` determine how the collection is setup
- * @return {Object} a new collection object
- */
-
-collection.createCollection = function (options) {
-  options = options || {};
-  options.name = options.name || 'collection';
-  options.plural = options.plural || options.name;
-  options.filter = options.filter || defaultFilter;
-  if (collection.cache.hasOwnProperty(options.plural)) {
-    return collection.cache[options.plural];
-  }
-  return collection.cache[options.plural] = new Collection(options);
-};
-
-
-/**
- * Add an item (bucket) to a collection.
- *
- * **Example**
- *
- * ```js
- * collection.addCollectionItem('tags', 'football');
- * ```
- *
- * @param {String} `key` name of the collection to add the bucket to.
- * @param {String} `collectionItem` name of the bucket to add.
- */
-
-collection.addCollectionItem = function (key, collectionItem) {
-  if (collection.cache.hasOwnProperty(key)) {
-    collection.cache[key].add(collectionItem);
-  }
-  var col = collection.createCollection({name: key});
-  col.add(collectionItem);
-};
-
-
-/**
- * Add an item to collections that it belongs to.
- *
- * **Example**
- *
- * ```js
- * item = {
- *   name: 'foo',
- *   data: {
- *     tags: ['football', 'baseball']
- *   }
- * };
- * collection.addItemToCollection(item);
- * //=> added to 'football' and 'baseball' tag collections
- * ```
- *
- * @param {Object} `item` item to add to collections based on filters
- */
-
-collection.addItemToCollection = function (item) {
-  // loop over the collections in the cache and use the filter
-  // to determine which buckets to add the item to
-  for(var key in collection.cache) {
-    var col = collection.cache[key];
-    var buckets = col.options.filter.call(col, item);
-    if (buckets) {
-      for (var i = 0; i < buckets.length; i++) {
-        col.add(buckets[i], item);
-      }
+module.exports = function(config) {
+  return function assembleCollections(app) {
+    if (!isValidInstance(this)) {
+      return;
     }
-  }
-};
 
+    var List = this.List;
+    if (!List) {
+      throw new Error('Unable to find a "List" constructor on "app".');
+    }
 
-/**
- * Iterate over all the collections
- *
- * **Example**
- *
- * ```js
- * collections.forEach(function (collection) {
- *   //=> do stuff to the collection
- * });
- * ```
- *
- * @param {Function} `fn` function that gets called for each collection
- */
+    /**
+     * 1. Add middleware to gather collection information from front-matter (data)
+     * 2. Add helpers to retrieve sorted/grouped collections in templates
+     * 3. ? Add data for accessing collections in templates
+     */
 
-collection.forEach = function (fn) {
-  this.collections.forEach(fn);
-};
+    var opts = utils.merge({
+      regex: /\.md$/,
+      collections: {
+        categories: {
+          inflection: 'category',
+          sortBy: 'asc'
+        },
+        tags: {
+          inflection: 'tag',
+          sortBy: 'asc'
+        }
+      }
+    }, this.options, config);
 
+    var collections = {};
+    var collectionKeys = Object.keys(opts.collections);
 
-/**
- * List of collections
- *
- * **Example**
- *
- * ```js
- * var collections = collection.collections;
- * //=> all the collections as an array
- * ```
- * @return {Array} list of collections
- */
+    var self = this;
 
-Object.defineProperty(collection, 'collections', {
-  get: function () {
-    return Object.keys(collection.cache).map(function (key) {
-      return collection.cache[key];
+    /**
+     * `preRender` middleware for building up a collection using the built-in `groupBy` method
+     * on view collections. This middleware controlled by the passed in `regex` property on the
+     * plugin configuration.
+     */
+
+    this.preRender(opts.regex, function(file, next) {
+      var collection = self[file.options.collection];
+      if (!collection) {
+        return next();
+      }
+      collectionKeys.forEach(function(key) {
+        if (collections.hasOwnProperty(key)) {
+          return;
+        }
+
+        var collectionOpts = opts.collections[key];
+        if (typeof collectionOpts === 'string') {
+          collectionOpts = { inflection: collectionOpts };
+        }
+        var prop = 'data.' + collectionOpts.inflection;
+        var group = collection.groupBy(prop);
+        collections[key] = group;
+      });
+      next();
     });
-  }
-});
 
+    /**
+     * Helper to iterate or return an array of frontmatter collection keys.
+     *
+     * ```handlebars
+     * {{! use as a block helper }}
+     * {{#collections}}
+     *   {{this.name}}
+     * {{/collections}}
+     *
+     * {{! use as a subexpression }}
+     * {{#each (collections)}}
+     *   {{this.name}}
+     * {{/each}}
+     * ```
+     *
+     * @name collections
+     * @api public
+     */
+
+    this.helper('collections', function(options) {
+      if (options.fn) {
+        return Object.keys(collections).map(function(key) {
+          return options.fn({ name: key });
+        }).join('\n');
+      }
+      return Object.keys(collections);
+    });
+
+    /**
+     * Helper to return the collection instance or iterate over each collection item
+     * in the collection.
+     *
+     * ```handlebars
+     * {{! use as a block helper }}
+     * {{#collection "categories"}}
+     *   <span>{{category}}</span>
+     *   <ul>
+     *     {{#each items}}
+     *       <li>{{name}}</li>
+     *     {{/each}}
+     *   </ul>
+     * {{/collection}}
+     *
+     * {{! use as a subexpression }}
+     * {{#each (collection "categories")}}
+     *   <span>{{category}}</span>
+     *   <ul>
+     *     {{#each items}}
+     *       <li>{{name}}</li>
+     *     {{/each}}
+     *   </ul>
+     * {{/each}}
+     * ```
+     *
+     * @name collection
+     * @api public
+     */
+
+    this.helper('collection', function(name, options) {
+      var collection = collections[name];
+      if (typeof collection === 'undefined') {
+        return options.fn ? options.fn() : '';
+      }
+
+      var collectionOpts = opts.collections[name];
+      if (options.fn) {
+        return Object.keys(collection).map(function(inflection) {
+          var list = collection.get(inflection);
+          var ctx = {
+            inflection: inflection
+          };
+          ctx[collectionOpts.inflection] = inflection;
+          ctx.items = list.items;
+          return options.fn(ctx);
+        }).join('\n');
+      }
+      return collection;
+    });
+  };
+};
+
+function isValidInstance(app) {
+  if (app.isRegistered('assemble-collections')) {
+    return false;
+  }
+  if (app.isApp) {
+    return true;
+  }
+  return false;
+}
