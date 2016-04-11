@@ -1,7 +1,7 @@
 {
   "name": "assemble-collections",
   "description": "Assemble plugin to add middleware and helpers for working with frontmatter based collections.",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "homepage": "https://github.com/assemble/assemble-collections",
   "author": "Brian Woodward (https://github.com/doowb)",
   "authors": [
