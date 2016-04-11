@@ -22,6 +22,7 @@ category: foo
 ---
 {{#collections}}{{this.name}}{{/collections}}
 `;
+
     app.page('a.md', { content: content });
     app.render('a.md', function(err, results) {
       if (err) return cb(err);
@@ -42,10 +43,12 @@ category: foo
 </ul>
 {{/collection}}
 `;
+
     var expected = `<ul>
   <li>a.md</li>
 </ul>
-`
+`;
+
     app.page('a.md', { content: content });
     app.render('a.md', function(err, results) {
       if (err) return cb(err);
@@ -66,12 +69,13 @@ category: foo
 </ul>
 {{/collection}}
 `;
+
     var expected = `<ul>
   <li>a.md</li>
   <li>b.md</li>
   <li>c.md</li>
 </ul>
-`
+`;
     app.page('a.md', { content: content });
     app.page('b.md', { content: content });
     app.page('c.md', { content: content });
@@ -100,6 +104,7 @@ tag:
 {{/collection}}
 {{/collections}}
 `;
+
     var expected = `# categories
 
 ## foo

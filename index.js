@@ -20,7 +20,7 @@ module.exports = function(config) {
      */
 
     var opts = utils.merge({
-      regex: /\.md$/,
+      regex: /\.md$/, // use `app.options.exts`
       collections: {
         categories: {
           inflection: 'category',
@@ -131,9 +131,11 @@ module.exports = function(config) {
 
       var collectionOpts = opts.collections[name];
       if (options.fn) {
+        // TODO: need a better way of just getting the collection items (e.g. categories, tags)
         return Object.keys(collection).map(function(key) {
           var list = collection.get(key);
           var ctx = {
+            name: key,
             inflection: collectionOpts.inflection
           };
           ctx[collectionOpts.inflection] = key;
