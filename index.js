@@ -131,12 +131,12 @@ module.exports = function(config) {
 
       var collectionOpts = opts.collections[name];
       if (options.fn) {
-        return Object.keys(collection).map(function(inflection) {
-          var list = collection.get(inflection);
+        return Object.keys(collection).map(function(key) {
+          var list = collection.get(key);
           var ctx = {
-            inflection: inflection
+            inflection: collectionOpts.inflection
           };
-          ctx[collectionOpts.inflection] = inflection;
+          ctx[collectionOpts.inflection] = key;
           ctx.items = list.items;
           return options.fn(ctx);
         }).join('\n');
