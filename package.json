@@ -1,50 +1,31 @@
 {
   "name": "assemble-collections",
-  "description": "Node library for managing collections of items in or out of Assemble.",
+  "description": "Assemble plugin for handling front matter collections.",
   "version": "0.1.9",
   "homepage": "https://github.com/assemble/assemble-collections",
-  "author": {
-    "name": "Brian Woodward",
-    "url": "https://github.com/doowb"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/assemble/assemble-collections.git"
-  },
+  "author": "Brian Woodward (https://github.com/doowb)",
+  "authors": [
+    "Brian Woodward (https://github.com/doowb)",
+    "Jon Schlinkert (https://github.com/jonschlinkert)"
+  ],
+  "maintainers": [
+    "Brian Woodward (https://github.com/doowb)",
+    "Jon Schlinkert (https://github.com/jonschlinkert)"
+  ],
+  "repository": "assemble/assemble-collections",
   "bugs": {
     "url": "https://github.com/assemble/assemble-collections/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/assemble/assemble-collections/blob/master/LICENSE-MIT"
-    }
-  ],
-  "keywords": [
-    "docs",
-    "documentation",
-    "generate",
-    "generator",
-    "markdown",
-    "templates",
-    "verb"
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "lib/"
   ],
   "main": "index.js",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=4.0"
   },
   "scripts": {
-    "test": "mocha -R spec"
-  },
-  "devDependencies": {
-    "verb": "~0.2.0",
-    "chai": "^1.9.1",
-    "mocha": "^1.18.2",
-    "verb-tag-jscomments": "^0.1.4"
-  },
-  "dependencies": {
-    "collections": "^1.0.2",
-    "lodash": "^2.4.1",
-    "traverse": "^0.6.6"
+    "test": "mocha"
   }
 }
