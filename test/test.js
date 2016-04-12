@@ -59,4 +59,20 @@ describe('assemble-collections', function() {
     });
   });
 
+  it('should add pages to custom collections', function(cb) {
+    app = assemble();
+    app.use(collections({
+      collections: {
+        custom: {
+          inflection: 'customs'
+        }
+      }
+    }));
+    app.pages(fixtures('complex', 'custom', '*.hbs'));
+    app.render('a.hbs', function(err, results) {
+      if (err) return cb(err);
+      assert.equal(results.content, '# A\n\n### foo\n- [A](a.hbs)\n- [C](c.hbs)\n\n### bar\n- [B](b.hbs)\n- [C](c.hbs)\n');
+      cb();
+    });
+  });
 });

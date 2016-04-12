@@ -1,0 +1,12 @@
+---
+title: B
+custom: bar
+---
+# {{title}}
+
+{{#collection "custom"}}
+### {{lookup this inflection}}
+{{#each items}}
+- [{{data.title}}]({{basename}})
+{{/each}}
+{{/collection}}
