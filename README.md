@@ -23,7 +23,26 @@ var app.use(collections());
 
 ## API
 
-### [collections](index.js#L96)
+### [.collections](index.js#L23)
+
+Add middleware to gather collections from frontmatter and provide helpers for working with collections, collection groups, and views in collection groups.
+
+**Params**
+
+* `config` **{Object}**: Configuration object for setting up frontmatter collections.
+* `config.exts` **{Array}**: Array of extensions to use when adding `preRender` middleware. Defaults to `['md', 'hbs', 'html']`.
+* `config.collections` **{Object}**: Optional collections to look for in view frontmatter. Default collections are `categories` and `tags`.
+* `config.collections.${key}` **{Object}**: Individual collection configuration.
+* `config.collections.${key}.inflection` **{String}**: Singular version of collection key: e.g. `categories: { inflection: 'category' }`
+* `config.collections.${key}.sortBy` **{String}**: Default sort direction of views in each collection. Defaults to `asc`.
+
+**Example**
+
+```js
+app.use(collections());
+```
+
+### [collections](index.js#L114)
 
 Helper to iterate or return an array of frontmatter collection keys.
 
@@ -41,7 +60,7 @@ Helper to iterate or return an array of frontmatter collection keys.
 {{/each}}
 ```
 
-### [collection](index.js#L135)
+### [collection](index.js#L153)
 
 Helper to return the collection instance or iterate over each collection item in the collection.
 
