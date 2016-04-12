@@ -2,6 +2,24 @@
 
 var utils = require('./lib/utils');
 
+/**
+ * Add middleware to gather collections from frontmatter and
+ * provide helpers for working with collections, collection groups, and
+ * views in collection groups.
+ *
+ * ```js
+ * app.use(collections());
+ * ```
+ * @name collections
+ * @param {Object} `config` Configuration object for setting up frontmatter collections.
+ * @param {Array}  `config.exts` Array of extensions to use when adding `preRender` middleware. Defaults to `['md', 'hbs', 'html']`.
+ * @param {Object} `config.collections` Optional collections to look for in view frontmatter. Default collections are `categories` and `tags`.
+ * @param {Object} `config.collections.${key}` Individual collection configuration.
+ * @param {String} `config.collections.${key}.inflection` Singular version of collection key: e.g. `categories: { inflection: 'category' }`
+ * @param {String} `config.collections.${key}.sortBy` Default sort direction of views in each collection. Defaults to `asc`.
+ * @api public
+ */
+
 module.exports = function(config) {
   return function assembleCollections(app) {
     if (!isValidInstance(this)) {
