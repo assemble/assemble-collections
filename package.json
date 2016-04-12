@@ -30,6 +30,7 @@
     "test": "mocha"
   },
   "dependencies": {
+    "get-value": "^2.0.5",
     "lazy-cache": "^1.0.3",
     "mixin-deep": "^1.1.3"
   },

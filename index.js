@@ -58,8 +58,17 @@ module.exports = function(config) {
         if (typeof collectionOpts === 'string') {
           collectionOpts = { inflection: collectionOpts };
         }
-        var prop = 'data.' + collectionOpts.inflection;
-        var group = collection.groupBy(prop);
+
+        var props = [`data.${key}`, `data.${collectionOpts.inflection}`];
+        var group = collection.groupBy(function(item) {
+          return props.reduce(function(acc, prop) {
+            var val = utils.get(item, prop);
+            if (typeof val !== 'undefined') {
+              acc = acc.concat(val);
+            }
+            return acc;
+          }, []);
+        });
         collections[key] = group;
       });
       next();
