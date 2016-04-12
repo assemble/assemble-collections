@@ -20,7 +20,7 @@ module.exports = function(config) {
      */
 
     var opts = utils.merge({
-      regex: /\.md$/, // use `app.options.exts`
+      exts: ['md', 'hbs', 'html'],
       collections: {
         categories: {
           inflection: 'category',
@@ -44,7 +44,7 @@ module.exports = function(config) {
      * plugin configuration.
      */
 
-    this.preRender(opts.regex, function(file, next) {
+    this.preRender(utils.extRegex(opts.exts), function(file, next) {
       var collection = self[file.options.collection];
       if (!collection) {
         return next();
