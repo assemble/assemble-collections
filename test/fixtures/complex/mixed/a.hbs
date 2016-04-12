@@ -1,0 +1,19 @@
+---
+title: A
+category: foo
+tag:
+ - bar
+ - baz
+---
+# {{title}}
+
+{{#collections}}
+## {{name}}
+
+{{#collection name}}
+### {{lookup this inflection}}
+{{#each items}}
+- [{{data.title}}]({{basename}})
+{{/each}}
+{{/collection}}
+{{/collections}}

@@ -1,0 +1,11 @@
+---
+title: Categories list
+category: foo
+---
+# {{title}}
+
+{{#collection "categories"}}
+  {{#each items}}
+ - {{basename}}
+  {{~/each}}
+{{/collection}}

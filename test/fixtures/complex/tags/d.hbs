@@ -1,0 +1,11 @@
+---
+title: D
+tag: bar
+---
+# {{title}}
+
+{{#collection "tags"}}
+  {{#each items}}
+ - {{basename}}
+  {{~/each}}
+{{/collection}}
