@@ -1,8 +1,10 @@
 'use strict';
 
+var path = require('path');
 var assert = require('assert');
 var assemble = require('assemble');
 var collections = require('../');
+var fixtures = path.join.bind(path, __dirname, 'fixtures');
 var app;
 
 describe('assemble-collections', function() {
@@ -17,119 +19,42 @@ describe('assemble-collections', function() {
   });
 
   it('should create a default for categories and tags', function(cb) {
-    var content = `---
-category: foo
----
-{{#collections}}{{this.name}}{{/collections}}
-`;
-
-    app.page('a.md', { content: content });
-    app.render('a.md', function(err, results) {
+    app.page(fixtures('basic', 'a.hbs'));
+    app.render('a.hbs', function(err, results) {
       if (err) return cb(err);
-      assert.equal(results.content, 'categories\ntags\n');
+      assert.equal(results.content, '# A\n\n- categories\n- tags');
       cb();
     });
   });
 
   it('should add a page to a default collection', function(cb) {
-    var content = `---
-category: foo
----
-{{#collection "categories"}}
-<ul>
-  {{#each items}}
-  <li>{{path}}</li>
-  {{/each}}
-</ul>
-{{/collection}}
-`;
-
-    var expected = `<ul>
-  <li>a.md</li>
-</ul>
-`;
-
-    app.page('a.md', { content: content });
-    app.render('a.md', function(err, results) {
+    app.page(fixtures('complex', 'categories-list.hbs'));
+    app.render('categories-list.hbs', function(err, results) {
       if (err) return cb(err);
-      assert.equal(results.content, expected);
+      assert.equal(results.content, '# Categories list\n\n - categories-list.hbs');
       cb();
     });
   });
 
   it('should add multiple pages to a default collection', function(cb) {
-    var content = `---
-category: foo
----
-{{#collection "categories"}}
-<ul>
-  {{#each items}}
-  <li>{{path}}</li>
-  {{/each}}
-</ul>
-{{/collection}}
-`;
-
-    var expected = `<ul>
-  <li>a.md</li>
-  <li>b.md</li>
-  <li>c.md</li>
-</ul>
-`;
-    app.page('a.md', { content: content });
-    app.page('b.md', { content: content });
-    app.page('c.md', { content: content });
-    app.render('a.md', function(err, results) {
+    app.pages(fixtures('complex', 'categories', '*.hbs'));
+    app.pages(fixtures('complex', 'tags', '*.hbs'));
+    app.render('a.hbs', function(err, results) {
       if (err) return cb(err);
-      assert.equal(results.content, expected);
-      cb();
+      assert.equal(results.content, '# A\n\n - a.hbs - b.hbs - c.hbs');
+      app.render('d.hbs', function(err, results) {
+        if (err) return cb(err);
+        assert.equal(results.content, '# D\n\n - d.hbs - e.hbs - f.hbs');
+        cb();
+      });
     });
   });
 
   it('should add pages to multiple default collections', function(cb) {
-    var content = `---
-category: foo
-tag:
- - bar
- - baz
----
-{{#collections}}
-# {{name}}
-
-{{#collection name}}
-## {{lookup this inflection}}
-{{#each items}}
-- {{path}}
-{{/each}}
-{{/collection}}
-{{/collections}}
-`;
-
-    var expected = `# categories
-
-## foo
-- a.md
-- b.md
-- c.md
-
-# tags
-
-## bar
-- a.md
-- b.md
-- c.md
-
-## baz
-- a.md
-- b.md
-- c.md
-`;
-    app.page('a.md', { content: content });
-    app.page('b.md', { content: content });
-    app.page('c.md', { content: content });
-    app.render('a.md', function(err, results) {
+    app.pages(fixtures('complex', 'mixed', '*.hbs'));
+    app.render('a.hbs', function(err, results) {
       if (err) return cb(err);
-      assert.equal(results.content, expected);
+      assert.equal(results.content, '# A\n\n## categories\n\n### foo\n- [A](a.hbs)\n- [B](b.hbs)\n- [C](c.hbs)\n\n## tags\n\n### bar\n- [A](a.hbs)\n- [B](b.hbs)\n- [C](c.hbs)\n\n### baz\n- [A](a.hbs)\n- [B](b.hbs)\n- [C](c.hbs)\n');
       cb();
     });
   });
