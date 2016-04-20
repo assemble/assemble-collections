@@ -16,7 +16,7 @@ var utils = require('./lib/utils');
  * @param {Object} `config.collections` Optional collections to look for in view frontmatter. Default collections are `categories` and `tags`.
  * @param {Object} `config.collections.${key}` Individual collection configuration.
  * @param {String} `config.collections.${key}.inflection` Singular version of collection key: e.g. `categories: { inflection: 'category' }`
- * @param {String} `config.collections.${key}.sortBy` Default sort direction of views in each collection. Defaults to `asc`.
+ * @param {String} `config.collections.${key}.sortOrder` Default sort direction of views in each collection. Defaults to `asc`.
  * @api public
  */
 
@@ -42,11 +42,11 @@ module.exports = function(config) {
       collections: {
         categories: {
           inflection: 'category',
-          sortBy: 'asc'
+          sortOrder: 'asc'
         },
         tags: {
           inflection: 'tag',
-          sortBy: 'asc'
+          sortOrder: 'asc'
         }
       }
     }, this.options, config);
@@ -156,11 +156,19 @@ module.exports = function(config) {
         return options.fn ? options.fn() : '';
       }
 
+      var sortBy;
+      if (options.hash && typeof options.hash.sortBy === 'string') {
+        sortBy = options.hash.sortBy;
+      }
+
       var collectionOpts = opts.collections[name];
       if (options.fn) {
         // TODO: need a better way of just getting the collection items (e.g. categories, tags)
         return Object.keys(collection).map(function(key) {
           var list = collection.get(key);
+          if (sortBy) {
+            list = list.sortBy(sortBy);
+          }
           var ctx = {
             name: key,
             inflection: collectionOpts.inflection
